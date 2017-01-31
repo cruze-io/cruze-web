@@ -29,6 +29,8 @@ class HelmetContainer extends Component {
     const iconsCdnUrl = iconSet === 'ionicons'  ? 'https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css' : fontasticIcons
     let links = [
       {"rel": "stylesheet", "href": "//dff2h0hbfv6w4.cloudfront.net/assets/normalize.css"},
+      {"rel": "stylesheet", "href": "https://api.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.css"},
+      {"rel": "stylesheet", "href": "https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v3.0.3/mapbox-gl-directions.css"},
       {"rel": "stylesheet", "href": iconsCdnUrl},
       {"rel": "stylesheet", "href": fontCdnUrl},
       {"rel": "canonical", "href": metaUrl},

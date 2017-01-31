@@ -12,6 +12,7 @@ const PROP_TYPES = {
   tilt: PropTypes.number,
   width: PropTypes.number,
   height: PropTypes.number,
+  mapLoaded: PropTypes.func,
 }
 
 class Map extends Component {
@@ -22,6 +23,7 @@ class Map extends Component {
     this.locationUpdated = this.locationUpdated.bind(this)
     this.getMapStyles = this.getMapStyles.bind(this)
     this.mapZoomUpdated = this.mapZoomUpdated.bind(this)
+    this.drawPathOnMap = this.drawPathOnMap.bind(this)
   }
   componentDidMount() {
     this.loadGoogleMaps()
@@ -34,6 +36,13 @@ class Map extends Component {
     if (nextProps.zoom !== this.props.zoom) {
       this.mapZoomUpdated()
     }
+    if (nextProps.destinationPath && !this.props.destinationPath) {
+      this.drawPathOnMap(nextProps.destinationPath)
+    }
+  }
+  loadGoogleMaps() {
+    const src ='https://maps.googleapis.com/maps/api/js?key=AIzaSyDKtzlprtCZG6DtLjl7_AIwS5OjtEe3iFo'
+    loadScript(src, this.mapsScriptLoaded)
   }
   getMapConfig() {
     const {zoom, tilt, heading, latitude, longitude} = this.props
@@ -44,6 +53,14 @@ class Map extends Component {
       heading: heading || 90,
       tilt: tilt || 100,
     }
+  }
+  mapsScriptLoaded() {
+    const self = this
+    const {mapLoaded} = this.props
+    const mapContainer = this.refs.mapContainer
+    this.map = new google.maps.Map(mapContainer, this.getMapConfig())
+    mapLoaded()
+    this.mapLoaded = true
   }
   locationUpdated() {
     const {latitude, longitude} = this.props
@@ -56,16 +73,16 @@ class Map extends Component {
     const {zoom} = this.props
     this.map.setZoom(zoom)
   }
-
-  loadGoogleMaps() {
-    const src ='https://maps.googleapis.com/maps/api/js?key=AIzaSyDKtzlprtCZG6DtLjl7_AIwS5OjtEe3iFo'
-    loadScript(src, this.mapsScriptLoaded)
-  }
-  mapsScriptLoaded() {
-    const self = this
-    const mapContainer = this.refs.mapContainer
-    this.map = new google.maps.Map(mapContainer, this.getMapConfig())
-    this.mapLoaded = true
+  drawPathOnMap(destinationPath) {
+    console.log(destinationPath.toJS())
+    const path = new google.maps.Polyline({
+      path: destinationPath.toJS(),
+      gedesic: true,
+      strokeColor: '#C927FC',
+      strokeOpacity: 1,
+      strokeWeight: 3,
+    })
+    path.setMap(this.map)
   }
   getMapStyles() {
     const {width, height} = this.props

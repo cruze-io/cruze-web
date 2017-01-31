@@ -46,7 +46,8 @@ if (!process.env.NODE_ENV) {
   server.use(hot(compiler))
 }
 
-server.get('*', require('./app').serverMiddleware)
+server.get('/gps', require('./app').serverMiddleware)
+server.get('/', require('./app').serverMiddleware)
 
 server.listen(port, (err) => {
   if (err) console.error(err)

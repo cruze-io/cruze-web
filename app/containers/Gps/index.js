@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import Helmet from '../../components/HelmetContainer'
 import * as GeoActions from '../../actions/geo'
 import Map from '../../components/Map'
+import Navigate from '../../components/Navigate'
 import Navigation from '../../components/Navigation'
 import styles from './styles'
 
@@ -30,14 +31,18 @@ class Geo extends Component {
 
   mapLoaded() {
     const {dispatch, geo} = this.props
-    dispatch(GeoActions.navigateTo(geo.get('latitude'), geo.get('longitude'), 37.3190, 122.2742))
+    dispatch(GeoActions.navigateTo())
   }
   renderMap() {
     const {geo} = this.props
     return (
-      <Navigation
+      <Navigate
         latitude={geo.get('latitude')}
         longitude={geo.get('longitude')}
+        destLatitude={geo.get('destinationLatitude')}
+        destLongitude={geo.get('destinationLongitude')}
+        destinationPath={geo.get('destinationPath')}
+        navigationGeoJson={geo.get('navigationGeoJson')}
         zoom={geo.get('zoom')}
         tilt={geo.get('tilt')}
         heading={geo.get('heading')}

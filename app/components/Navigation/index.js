@@ -2,10 +2,13 @@ import React, {Component, PropTypes} from 'react'
 import Radium from 'radium'
 import loadScript from '../../helpers/loadScript'
 import styles from './styles'
+import Text from '../Text'
 
 const PROP_TYPES = {
   longitude: PropTypes.number,
   latitude: PropTypes.number,
+  destLatitude: PropTypes.number,
+  destLongitude: PropTypes.number,
   heading: PropTypes.number,
   speed: PropTypes.number,
   width: PropTypes.number,
@@ -21,9 +24,20 @@ class Navigation extends Component {
     this.renderMap = this.renderMap.bind(this)
     this.mapScriptLoaded = this.mapScriptLoaded.bind(this)
     this.skobblerPluginLoaded = this.skobblerPluginLoaded.bind(this)
+    this.locationUpdated = this.locationUpdated.bind(this)
   }
   componentDidMount() {
     this.loadLeafLetMap()
+  }
+  componentWillReceiveProps(nextProps) {
+    const {latitude, longitude} = this.props
+    if (latitude !== nextProps.latitude || longitude !== nextProps.longitude) {
+      this.locationUpdated()
+    }
+  }
+  locationUpdated() {
+    const {latitude, longitude} = this.props
+    this.map.panTo(new this.L.LatLng(latitude, longitude))
   }
   loadLeafLetMap() {
     loadScript('https://unpkg.com/leaflet@1.0.2/dist/leaflet.js', this.mapScriptLoaded)
