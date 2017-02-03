@@ -93,7 +93,7 @@ class Navigate extends Component {
         setTimeout(() => {
           self.map.rotateTo(e.route[0].steps[0].heading)
         }, 3000)
-      }, 5000)
+      }, 10000)
     })
   }
   initiateNavigation() {
