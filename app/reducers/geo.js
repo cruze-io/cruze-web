@@ -15,7 +15,7 @@ const initialState = fromJS({
   gettingLocation: true,
   latitude: null,
   longitude: null,
-  zoom: 50,
+  zoom: 20,
   pitch: 50,
   speed: 0,
   heading: 90,
