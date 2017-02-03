@@ -145,7 +145,9 @@ class Navigate extends Component {
       type: 'Point',
       coordinates: [longitude, latitude],
     };
-    this.map.getSource('user-location').setData(point);
+    if (this.map && this.map.getSource && this.map.getSource('user-location') && this.map.getSource('user-location').setData) {
+      this.map.getSource('user-location').setData(point);
+    }
     this.map.flyTo({
       center: [longitude, latitude],
       speed: 2,
