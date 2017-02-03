@@ -10,31 +10,24 @@ export const getLocation = () => {
     dispatch({
       type: GETTING_LOCATION,
     })
-    let fetchingLocation = false
     const err = (msg) => {
       console.log("### ERROR")
       console.log(msg)
     }
     const success = (position) => {
       console.log(position)
-      fetchingLocation = false
       dispatch({
         type: LOCATION_UPDATED,
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
       })
     }
-    const getCurrentPositionOptions = {
-      timeout: 5000,
+    const watchPositionOptions = {
       enableHighAccuracy: true,
+      timeout: 6000,
     }
     if (navigator.geolocation) {
-      setInterval(() => {
-        if (!fetchingLocation) {
-         fetchingLocation = true
-         navigator.geolocation.getCurrentPosition(success, err, getCurrentPositionOptions)
-        }
-      }, 500)
+      navigator.geolocation.watchPosition(success, err, watchPositionOptions)
     } else {
       dispatch({
         type: GEO_ERROR,
