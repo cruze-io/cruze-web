@@ -92,7 +92,7 @@ class Navigate extends Component {
       setTimeout(() => {
         self.map.flyTo({
           center: [longitude, latitude],
-          speed: 1.5,
+          speed: 1.6,
           curve: 1,
           zoom,
           pitch,
@@ -101,7 +101,7 @@ class Navigate extends Component {
           self.map.rotateTo(e.route[0].steps[0].heading)
           self.destinationLoaded = true
         }, 3000)
-      }, 1200)
+      }, 5000)
     })
   }
   initiateNavigation() {
