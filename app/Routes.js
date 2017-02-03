@@ -7,8 +7,8 @@ import NoMatch from './containers/NoMatch';
 
 export default (
   <Route component={App}>
-    <Route path='/cruze' component={Gps} />
-    <Route path='/landing' component={Landing} />
+    <Route path='/' component={Landing} />
+    <Route path='/gps' component={Gps} />
     <Route path="*" component={NoMatch} />
   </Route>
 );

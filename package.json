@@ -14,7 +14,7 @@
   "homepage": "https://yash-saxena.com",
   "scripts": {
     "start-dev": "node server",
-    "start": "npm run build && NODE_ENV=production PORT=3050 node server",
+    "start": "npm run build && node server",
     "build": "NODE_ENV=production webpack --config ./webpack.production.config.js --progress",
     "reactotron": "node_modules/.bin/reactotron",
     "crc": "node ./commands/crc"
