@@ -92,7 +92,7 @@ class Navigate extends Component {
       setTimeout(() => {
         self.map.flyTo({
           center: [longitude, latitude],
-          speed: 1.6,
+          speed: 1,
           curve: 1,
           zoom,
           pitch,
