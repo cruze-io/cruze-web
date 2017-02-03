@@ -65,6 +65,12 @@ class Navigate extends Component {
       unit: 'metric',
       profile: 'driving',
       container: 'directions',
+      geocoder: {
+        options: {
+          zoom: 12,
+          flyTo: false,
+        }
+      },
       controls: {
         inputs: false,
         instructions: false,
@@ -95,7 +101,7 @@ class Navigate extends Component {
         setTimeout(() => {
           self.map.rotateTo(e.route[0].steps[0].heading)
         }, 3000)
-      }, 10000)
+      }, 4000)
     })
   }
   initiateNavigation() {
