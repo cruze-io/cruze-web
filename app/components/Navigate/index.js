@@ -37,7 +37,7 @@ class Navigate extends Component {
   }
   componentWillReceiveProps(nextProps) {
     const {zoom, latitude, longitude} = this.props
-    if (latitude && longitude && (nextProps.latitude !== latitude) || (nextProps.longitude !== longitude)) {
+    if (latitude && longitude && (nextProps.latitude !== latitude) || (nextProps.longitude !== longitude) && this.destinationLoaded) {
       this.locationUpdated(nextProps.longitude, nextProps.latitude, nextProps.pitch, nextProps.heading)
     }
     if (nextProps.tripStarted) {
@@ -101,7 +101,7 @@ class Navigate extends Component {
           self.map.rotateTo(e.route[0].steps[0].heading)
           self.destinationLoaded = true
         }, 3000)
-      }, 10000)
+      }, 5000)
     })
   }
   initiateNavigation() {
