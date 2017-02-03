@@ -30,6 +30,7 @@ class Navigate extends Component {
     this.initiateNavigation = this.initiateNavigation.bind(this)
     this.drawUserMarker = this.drawUserMarker.bind(this)
     this.tripStarted = this.tripStarted.bind(this)
+    this.destinationLoaded = false
   }
   componentDidMount() {
     this.loadMapBox()
@@ -81,6 +82,7 @@ class Navigate extends Component {
     this.directions.on('route', (e) => {
       console.log("ON ROUTE")
       console.log(e)
+      self.destinationLoaded = true
       setTrip(e.route[0].distance, e.route[0].duration, e.route[0].steps)
       setTimeout(() => {
         self.map.flyTo({
@@ -145,8 +147,8 @@ class Navigate extends Component {
       type: 'Point',
       coordinates: [longitude, latitude],
     };
-    if (this.map && this.map.getSource && this.map.getSource('user-location') && this.map.getSource('user-location').setData) {
-      this.map.getSource('user-location').setData(point);
+    if (this.destinationLoaded) {
+      this.map.getSource('user-location').setData(point)
     }
     this.map.flyTo({
       center: [longitude, latitude],
