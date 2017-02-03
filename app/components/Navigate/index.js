@@ -102,7 +102,7 @@ class Navigate extends Component {
           self.destinationLoaded = true
           self.locationUpdated()
         }, 3000)
-      }, 4000)
+      }, 1200)
     })
   }
   initiateNavigation() {
@@ -149,13 +149,15 @@ class Navigate extends Component {
     })
   }
   locationUpdated(longitude, latitude, pitch, heading) {
-    console.log("### LOCAIN UPDATED")
     const point = {
       type: 'Point',
       coordinates: [longitude, latitude],
     };
     if (this.destinationLoaded) {
+      console.log("### LOCATION HAS UPDATED, DONE ANIMATING")
       this.map.getSource('user-location').setData(point)
+    } else {
+      console.log("### LOCATION HAS UPDATED, BUT STILL ANIMATING")
     }
     this.map.flyTo({
       center: [longitude, latitude],

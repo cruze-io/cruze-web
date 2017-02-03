@@ -33,7 +33,6 @@ class NavigationControls extends Component {
     }
   }
   tripStarted() {
-    console.log("### SHOWING TRIP STATUS")
     this.setState({
       contentTop: '-100%',
       summaryOpacity: 0,
@@ -115,9 +114,7 @@ class NavigationControls extends Component {
   }
   renderSteps() {
     const {tripSteps} = this.props
-    console.log(tripSteps)
     return tripSteps.map((step, index) => {
-      console.log(step.toJS())
       return (
         <div key={index} style={styles.stepContainer}>
           <div style={styles.directionContainer}>
