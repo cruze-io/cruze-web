@@ -67,7 +67,7 @@ class Navigate extends Component {
       container: 'directions',
       geocoder: {
         options: {
-          zoom: 12,
+          zoom,
           flyTo: false,
         }
       },
@@ -100,7 +100,6 @@ class Navigate extends Component {
         setTimeout(() => {
           self.map.rotateTo(e.route[0].steps[0].heading)
           self.destinationLoaded = true
-          self.locationUpdated()
         }, 3000)
       }, 1200)
     })
