@@ -15,7 +15,7 @@ const Root = props => {
         {renderEnvironment()}
         {renderInitialState(props)}
         {head.script.toComponent()}
-        <script src={process.env.NODE_ENV || !process.env.NODE_ENV ? '/app.js' : '/app.min.js'}></script>
+        <script src={process.env.NODE_ENV || !process.env.NODE_ENV ? '/app.min.js' : '/app.js'}></script>
       </body>
     </html>
   )
