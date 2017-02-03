@@ -1,14 +1,17 @@
 import React, {Component, PropTypes} from 'react'
+import ImmutablePropTypes from 'react-immutable-proptypes'
 import Radium, {StyleRoot} from 'radium'
 import { connect } from 'react-redux'
 import Helmet from '../../components/HelmetContainer'
 import * as GeoActions from '../../actions/geo'
 import Map from '../../components/Map'
 import Navigate from '../../components/Navigate'
+import NavigationControls from '../../components/NavigationControls'
 import Navigation from '../../components/Navigation'
 import styles from './styles'
 
 const PROP_TYPES = {
+  geo: ImmutablePropTypes.map,
 }
 
 class Geo extends Component {
@@ -19,22 +22,14 @@ class Geo extends Component {
     this.renderMapLoader = this.renderMapLoader.bind(this)
     this.mapLoaded = this.mapLoaded.bind(this)
   }
-
   componentDidMount() {
     this.props.dispatch(GeoActions.getLocation())
   }
-
-  componentWillReceiveProps(nextProps) {
-    console.log(nextProps)
-    console.log(nextProps.geo.toJS())
-  }
-
   mapLoaded() {
     const {dispatch, geo} = this.props
-    dispatch(GeoActions.navigateTo())
   }
   renderMap() {
-    const {geo} = this.props
+    const {geo, dispatch} = this.props
     return (
       <Navigate
         latitude={geo.get('latitude')}
@@ -42,23 +37,23 @@ class Geo extends Component {
         destLatitude={geo.get('destinationLatitude')}
         destLongitude={geo.get('destinationLongitude')}
         destinationPath={geo.get('destinationPath')}
-        navigationGeoJson={geo.get('navigationGeoJson')}
         zoom={geo.get('zoom')}
-        tilt={geo.get('tilt')}
+        pitch={geo.get('pitch')}
         heading={geo.get('heading')}
         mapLoaded={this.mapLoaded}
+        tripStarted={geo.get('tripStarted')}
+        setTrip={(distance, duration, tripSteps) => {dispatch(GeoActions.setTrip(distance, duration, tripSteps))}}
       />
     )
   }
-
   renderMapLoader() {
     return (
       <div style={styles.mapLoaderContainer} />
     )
   }
-
   render() {
-    const {geo} = this.props
+    const {geo, dispatch} = this.props
+    console.log(this.props.geo.toJS())
     return (
       <StyleRoot>
         <Helmet
@@ -73,7 +68,15 @@ class Geo extends Component {
             {geo.get('latitude') ? this.renderMap() : null}
             {this.renderMapLoader()}
           </div>
-
+          <div style={styles.controlsContainer}>
+            <NavigationControls
+              duration={geo.get('duration')}
+              distance={geo.get('distance')}
+              tripSteps={geo.get('tripSteps')}
+              tripStarted={geo.get('tripStarted')}
+              startTrip={() => {dispatch(GeoActions.startTrip())}}
+            />
+          </div>
         </div>
       </StyleRoot>
     )

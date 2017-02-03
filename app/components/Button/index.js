@@ -38,7 +38,7 @@ const generateButtonStyles = (size, color, radius, styles) => {
   const buttonSize = SIZE[size] || SIZE.regular
   return {
     backgroundColor: COLOR[color] ? COLOR[color].hex : COLOR.primary.hex,
-    borderRadius: radius || 2,
+    borderRadius: radius || buttonSize.height,
     ...buttonSize,
     ...styles,
   }

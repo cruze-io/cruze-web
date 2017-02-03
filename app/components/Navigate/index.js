@@ -1,42 +1,46 @@
 import React, {Component, PropTypes} from 'react'
 import loadScript from '../../helpers/loadScript'
+import config from '../../config'
 import Radium from 'radium'
 import styles from './styles'
-// const mapboxgl = require('mapbox-gl');
-// const MapboxDirections = require('@mapbox/mapbox-gl-directions');
 
 const PROP_TYPES = {
   key: PropTypes.string,
   latitude: PropTypes.number,
   longitude: PropTypes.number,
   zoom: PropTypes.number,
-  heading: PropTypes.number,
-  tilt: PropTypes.number,
+  pitch: PropTypes.number,
   width: PropTypes.number,
   height: PropTypes.number,
   mapLoaded: PropTypes.func,
+  setTrip: PropTypes.func,
+  tripStarted: PropTypes.bool,
 }
 
 class Navigate extends Component {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      gradientOpacity: 1,
+      hideGradient: false,
+    }
     this.locationUpdated = this.locationUpdated.bind(this)
     this.getMapStyles = this.getMapStyles.bind(this)
-    this.mapZoomUpdated = this.mapZoomUpdated.bind(this)
     this.initiateMap = this.initiateMap.bind(this)
     this.initiateNavigation = this.initiateNavigation.bind(this)
+    this.drawUserMarker = this.drawUserMarker.bind(this)
+    this.tripStarted = this.tripStarted.bind(this)
   }
   componentDidMount() {
     this.loadMapBox()
   }
   componentWillReceiveProps(nextProps) {
-    const {zoom, tilt, heading, latitude, longitude} = this.props
+    const {zoom, latitude, longitude} = this.props
     if (latitude && longitude && (nextProps.latitude !== latitude) || (nextProps.longitude !== longitude)) {
-      this.locationUpdated()
+      this.locationUpdated(nextProps.longitude, nextProps.latitude, nextProps.pitch, nextProps.heading)
     }
-    if (nextProps.zoom !== this.props.zoom) {
-      this.mapZoomUpdated()
+    if (nextProps.tripStarted) {
+      this.tripStarted()
     }
   }
   loadMapBoxDirection() {
@@ -50,46 +54,16 @@ class Navigate extends Component {
       self.loadMapBoxDirection()
     })
   }
-  getMapBearing(direction) {
-    switch(direction) {
-      case 'S':
-        return 180
-        break
-      case 'N':
-       return 0
-       break
-      case 'E':
-        return 90
-        break
-      case 'W':
-        return 22.5
-        break
-    }
-  }
-  getMapConfig() {
-    const {zoom, tilt, heading, pitch, latitude, longitude} = this.props
-    return {
-      center: {lat: latitude, lng: longitude},
-      rotateControl: true,
-      zoom: zoom || 20,
-      heading: heading || 90,
-      tilt: tilt || 100,
-      pitch: pitch || 38,
-    }
-  }
   initiateMap() {
     const self = this
-    const {latitude, longitude} = this.props
-    mapboxgl.accessToken = 'pk.eyJ1IjoiY3J1emUiLCJhIjoiY2l5aHlkcXVnMDU1cTJxbWd5cHVqd2l0YSJ9.LH-4KY27ylehvphxqbrZgg'
+    const {latitude, longitude, pitch, zoom, setTrip} = this.props
+    mapboxgl.accessToken = config.mapBoxAccessToken
     this.directions = new MapboxDirections({
       interactive: false,
-      accessToken: 'pk.eyJ1IjoiY3J1emUiLCJhIjoiY2l5aHlkcXVnMDU1cTJxbWd5cHVqd2l0YSJ9.LH-4KY27ylehvphxqbrZgg',
+      accessToken: config.mapBoxAccessToken,
       unit: 'metric',
       profile: 'driving',
       container: 'directions',
-      geocode: {
-        zoom: 5,
-      },
       controls: {
         inputs: false,
         instructions: false,
@@ -98,19 +72,23 @@ class Navigate extends Component {
     this.map = new mapboxgl.Map({
       container: 'map-container',
       style: 'mapbox://styles/cruze/ciyi2a07t001u2soclwrzjcmt',
-      ...this.getMapConfig(),
     })
     this.map.addControl(this.directions)
-    this.map.on('load', this.initiateNavigation)
+    this.map.on('load', () => {
+      this.initiateNavigation()
+      this.drawUserMarker()
+    })
     this.directions.on('route', (e) => {
+      console.log("ON ROUTE")
       console.log(e)
+      setTrip(e.route[0].distance, e.route[0].duration, e.route[0].steps)
       setTimeout(() => {
         self.map.flyTo({
           center: [longitude, latitude],
-          zoom: 18,
           speed: 1.5,
           curve: 1,
-          pitch: 50,
+          zoom,
+          pitch,
         });
         setTimeout(() => {
           self.map.rotateTo(e.route[0].steps[0].heading)
@@ -120,12 +98,15 @@ class Navigate extends Component {
   }
   initiateNavigation() {
     const {latitude, longitude, destLatitude, destLongitude} = this.props
+    this.directions.setOrigin([longitude, latitude])
+    this.directions.setDestination([destLongitude, destLatitude])
+  }
+  drawUserMarker() {
+    const {latitude, longitude} = this.props
     const userLocation = {
       type: 'Point',
       coordinates: [longitude, latitude],
     }
-    this.directions.setOrigin([longitude, latitude])
-    this.directions.setDestination([destLongitude, destLatitude])
     this.map.addSource('user-location', { type: 'geojson', data: userLocation });
     this.map.addLayer({
       id: 'user-outer-ring',
@@ -157,18 +138,33 @@ class Navigate extends Component {
         'circle-opacity': 1,
       }
     })
-    // this.map.setLayoutProperty('user', 'icon-rotate', direction * (180 / Math.PI));
   }
-  locationUpdated() {
-    const {latitude, longitude} = this.props
-    this.map.setCenter({
-      lat: latitude,
-      lng: longitude,
+  locationUpdated(longitude, latitude, pitch, heading) {
+    console.log("### LOCAIN UPDATED")
+    const point = {
+      type: 'Point',
+      coordinates: [longitude, latitude],
+    };
+    this.map.getSource('user-location').setData(point);
+    this.map.flyTo({
+      center: [longitude, latitude],
+      speed: 2,
+      curve: 1,
+      pitch,
+      heading,
     })
   }
-  mapZoomUpdated() {
-    const {zoom} = this.props
-    this.map.setZoom(zoom)
+  tripStarted() {
+    const self = this
+    this.setState({
+      gradientOpacity: 0,
+    }, () => {
+      setTimeout(() => {
+        self.setState({
+          hideGradient: true,
+        })
+      }, 1000)
+    })
   }
   getMapStyles() {
     const {width, height} = this.props
@@ -179,14 +175,15 @@ class Navigate extends Component {
   }
   render() {
     const {key} = this.props
+    const {gradientOpacity, hideGradient} = this.state
     return (
       <div style={styles.container}>
         <div
           ref={'mapContainer'}
           id={'map-container'}
           style={[styles.mapContainer, this.getMapStyles()]}
-        >
-        </div>
+        />
+        {!hideGradient ? <div style={{...styles.mapOverlayGradient, ...{opacity: gradientOpacity}}} /> : null }
       </div>
     )
   }
