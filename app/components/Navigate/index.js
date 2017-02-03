@@ -88,7 +88,6 @@ class Navigate extends Component {
     this.directions.on('route', (e) => {
       console.log("ON ROUTE")
       console.log(e)
-      self.destinationLoaded = true
       setTrip(e.route[0].distance, e.route[0].duration, e.route[0].steps)
       setTimeout(() => {
         self.map.flyTo({
@@ -100,6 +99,8 @@ class Navigate extends Component {
         });
         setTimeout(() => {
           self.map.rotateTo(e.route[0].steps[0].heading)
+          self.destinationLoaded = true
+          self.locationUpdated()
         }, 3000)
       }, 4000)
     })
