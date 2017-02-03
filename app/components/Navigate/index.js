@@ -101,7 +101,7 @@ class Navigate extends Component {
           self.map.rotateTo(e.route[0].steps[0].heading)
           self.destinationLoaded = true
         }, 3000)
-      }, 5000)
+      }, 10000)
     })
   }
   initiateNavigation() {
