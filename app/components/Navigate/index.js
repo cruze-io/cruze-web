@@ -1,6 +1,8 @@
 import React, {Component, PropTypes} from 'react'
 import loadScript from '../../helpers/loadScript'
 import config from '../../config'
+import mapBox from '../../constants/mapBox'
+import Text from '../Text'
 import Radium from 'radium'
 import styles from './styles'
 
@@ -31,6 +33,7 @@ class Navigate extends Component {
     this.initiateNavigation = this.initiateNavigation.bind(this)
     this.drawUserMarker = this.drawUserMarker.bind(this)
     this.tripStarted = this.tripStarted.bind(this)
+    this.renderDestinationInformation = this.renderDestinationInformation.bind(this)
   }
   componentDidMount() {
     this.loadMapBox()
@@ -45,12 +48,12 @@ class Navigate extends Component {
     }
   }
   loadMapBoxDirection() {
-    const src = 'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v3.0.3/mapbox-gl-directions.js'
+    const src = mapBox.mapBoxDirectionsSrc
     loadScript(src, this.initiateMap)
   }
   loadMapBox() {
     const self = this
-    const src = 'https://api.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.js'
+    const src = mapBox.mapBoxGlSrc
     loadScript(src, () => {
       self.loadMapBoxDirection()
     })
@@ -60,25 +63,10 @@ class Navigate extends Component {
     const {latitude, longitude, pitch, zoom, setTrip, heading} = this.props
     mapboxgl.accessToken = config.mapBoxAccessToken
     this.directions = new MapboxDirections({
-      interactive: false,
-      accessToken: config.mapBoxAccessToken,
-      unit: 'metric',
-      profile: 'driving',
-      container: 'directions',
-      flyTo: false,
-      geocoder: {
-        options: {
-          zoom,
-        }
-      },
-      controls: {
-        inputs: false,
-        instructions: false,
-      }
+      ...mapBox.gpsDirectionsConfig,
     })
     this.map = new mapboxgl.Map({
-      container: 'map-container',
-      style: 'mapbox://styles/cruze/ciyi2a07t001u2soclwrzjcmt',
+      ...mapBox.gpsMapConfig,
     })
     this.map.addControl(this.directions)
     this.map.on('load', () => {
@@ -93,6 +81,7 @@ class Navigate extends Component {
   }
   initiateNavigation() {
     const {latitude, longitude, destLatitude, destLongitude} = this.props
+    const self = this
     this.directions.setOrigin([longitude, latitude])
     this.directions.setDestination([destLongitude, destLatitude])
   }
@@ -102,36 +91,9 @@ class Navigate extends Component {
       type: 'Point',
       coordinates: [longitude, latitude],
     }
-    this.map.addSource('user-location', { type: 'geojson', data: userLocation });
-    this.map.addLayer({
-      id: 'user-outer-ring',
-      type: 'circle',
-      source: 'user-location',
-      paint: {
-        'circle-radius': 30,
-        'circle-color': '#FFFFFF',
-        'circle-opacity': 0.4,
-      }
-    })
-    this.map.addLayer({
-      id: 'user-outer-circle',
-      type: 'circle',
-      source: 'user-location',
-      paint: {
-        'circle-radius': 10,
-        'circle-color': '#E74FFE',
-        'circle-opacity': 1,
-      }
-    })
-    this.map.addLayer({
-      id: 'user-inner-cirlce',
-      type: 'circle',
-      source: 'user-location',
-      paint: {
-        'circle-radius': 2,
-        'circle-color': '#FFFFFF',
-        'circle-opacity': 1,
-      }
+    this.map.addSource('user-location', { type: 'geojson', data: userLocation })
+    mapBox.gpsUserLocationMarker.forEach((layer) => {
+      this.map.addLayer(layer)
     })
   }
   locationUpdated(longitude, latitude) {
@@ -184,7 +146,30 @@ class Navigate extends Component {
       height: height || '100%',
     }
   }
+  renderDestinationInformation() {
+    const {gradientOpacity} = this.state
+    return (
+      <div style={{...styles.destinationInformationContainer, ...{opacity: gradientOpacity}}}>
+        <div style={styles.mapOverlayGradient} />
+        <div style={styles.infoContainer}>
+          <Text
+            text={'NAVIGATING TO'}
+            size={'xSmall'}
+            weight={'regular'}
+            styles={styles.heading}
+          />
+          <Text
+            text={'PAGE MILL RD'}
+            size={'large'}
+            weight={'light'}
+            styles={styles.destinationName}
+          />
+        </div>
+      </div>
+    )
+  }
   render() {
+    console.log(mapBox)
     const {key} = this.props
     const {gradientOpacity, hideGradient} = this.state
     return (
@@ -194,7 +179,7 @@ class Navigate extends Component {
           id={'map-container'}
           style={[styles.mapContainer, this.getMapStyles()]}
         />
-        {!hideGradient ? <div style={{...styles.mapOverlayGradient, ...{opacity: gradientOpacity}}} /> : null }
+        {!hideGradient ? this.renderDestinationInformation() : null }
       </div>
     )
   }
