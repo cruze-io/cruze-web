@@ -90,9 +90,6 @@ class Navigate extends Component {
       console.log(e)
       setTrip(e.route[0].distance, e.route[0].duration, e.route[0].steps)
     })
-    this.directions.on('load', () => {
-      console.log("### MAP STOPPED MOVING")
-    })
   }
   initiateNavigation() {
     const {latitude, longitude, destLatitude, destLongitude} = this.props
@@ -137,23 +134,21 @@ class Navigate extends Component {
       }
     })
   }
-  locationUpdated(longitude, latitude, zoom, pitch, heading) {
+  locationUpdated(longitude, latitude) {
     const self = this
+    const {tripStarted} = this.props
     const point = {
       type: 'Point',
       coordinates: [longitude, latitude],
     };
-    this.map.getSource('user-location').setData(point)
-    this.map.flyTo({
-      center: [longitude, latitude],
-      speed: 2,
-      curve: 1,
-      pitch,
-      zoom,
-    })
-    setTimeout(() => {
-      self.map.rotateTo(heading)
-    }, 2000)
+    if (tripStarted) {
+      this.map.getSource('user-location').setData(point)
+      this.map.flyTo({
+        center: [longitude, latitude],
+        speed: 2,
+        curve: 1,
+      })
+    }
   }
   tripStarted() {
     const self = this
@@ -166,7 +161,16 @@ class Navigate extends Component {
           self.setState({
             hideGradient: true,
           })
-          self.locationUpdated(longitude, latitude, zoom, pitch, heading)
+          self.map.flyTo({
+            center: [longitude, latitude],
+            speed: 2,
+            curve: 1,
+            zoom,
+            pitch,
+          })
+          setTimeout(() => {
+            self.map.rotateTo(heading)
+          }, 2000)
         }, 1000)
       })
     } else {
