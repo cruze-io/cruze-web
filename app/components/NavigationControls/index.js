@@ -12,6 +12,7 @@ const PROP_TYPES = {
   tripSteps: ImmutablePropTypes.list,
   tripStarted: PropTypes.bool,
   startTrip: PropTypes.func,
+  destinationLoaded: PropTypes.bool,
 }
 
 class NavigationControls extends Component {
@@ -41,7 +42,7 @@ class NavigationControls extends Component {
     })
   }
   renderTripSummary() {
-    const {distance, duration, startTrip} = this.props
+    const {distance, duration, startTrip, destinationLoaded} = this.props
     const {summaryOpacity} = this.state
     return (
       <div style={{...styles.summaryContainer, ...{opacity: summaryOpacity}}}>
@@ -87,7 +88,11 @@ class NavigationControls extends Component {
             fontColor={'primary'}
             fontSize={'xSmall'}
             fontWeight={'semiBold'}
-            onClick={startTrip}
+            onClick={() => {
+              if (destinationLoaded) {
+                startTrip()
+              }
+            }}
           />
         </div>
       </div>

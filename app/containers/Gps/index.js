@@ -43,6 +43,7 @@ class Geo extends Component {
         mapLoaded={this.mapLoaded}
         tripStarted={geo.get('tripStarted')}
         setTrip={(distance, duration, tripSteps) => {dispatch(GeoActions.setTrip(distance, duration, tripSteps))}}
+        destinationLoaded={geo.get('destinationLoaded')}
       />
     )
   }
@@ -75,6 +76,7 @@ class Geo extends Component {
               tripSteps={geo.get('tripSteps')}
               tripStarted={geo.get('tripStarted')}
               startTrip={() => {dispatch(GeoActions.startTrip())}}
+              destinationLoaded={geo.get('destinationLoaded')}
             />
           </div>
         </div>

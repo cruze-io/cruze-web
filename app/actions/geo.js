@@ -45,7 +45,8 @@ export const setTrip = (distance, duration, tripSteps) => {
       distance,
       duration,
       tripSteps,
-      heading,
+      heading: tripSteps[0].heading,
+      destinationLoaded: true,
     })
   }
 }

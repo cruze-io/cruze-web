@@ -15,6 +15,7 @@ const PROP_TYPES = {
   mapLoaded: PropTypes.func,
   setTrip: PropTypes.func,
   tripStarted: PropTypes.bool,
+  destinationLoaded: PropTypes.bool,
 }
 
 class Navigate extends Component {
@@ -30,14 +31,13 @@ class Navigate extends Component {
     this.initiateNavigation = this.initiateNavigation.bind(this)
     this.drawUserMarker = this.drawUserMarker.bind(this)
     this.tripStarted = this.tripStarted.bind(this)
-    this.destinationLoaded = false
   }
   componentDidMount() {
     this.loadMapBox()
   }
   componentWillReceiveProps(nextProps) {
-    const {zoom, latitude, longitude} = this.props
-    if (latitude && longitude && (nextProps.latitude !== latitude) || (nextProps.longitude !== longitude) && this.destinationLoaded) {
+    const {zoom, latitude, longitude, destinationLoaded} = this.props
+    if (latitude && longitude && (nextProps.latitude !== latitude) || (nextProps.longitude !== longitude)) {
       this.locationUpdated(nextProps.longitude, nextProps.latitude, nextProps.pitch, nextProps.heading)
     }
     if (nextProps.tripStarted) {
@@ -57,7 +57,7 @@ class Navigate extends Component {
   }
   initiateMap() {
     const self = this
-    const {latitude, longitude, pitch, zoom, setTrip} = this.props
+    const {latitude, longitude, pitch, zoom, setTrip, heading} = this.props
     mapboxgl.accessToken = config.mapBoxAccessToken
     this.directions = new MapboxDirections({
       interactive: false,
@@ -65,10 +65,10 @@ class Navigate extends Component {
       unit: 'metric',
       profile: 'driving',
       container: 'directions',
+      flyTo: false,
       geocoder: {
         options: {
           zoom,
-          flyTo: false,
         }
       },
       controls: {
@@ -89,19 +89,9 @@ class Navigate extends Component {
       console.log("ON ROUTE")
       console.log(e)
       setTrip(e.route[0].distance, e.route[0].duration, e.route[0].steps)
-      setTimeout(() => {
-        self.map.flyTo({
-          center: [longitude, latitude],
-          speed: 1,
-          curve: 1,
-          zoom,
-          pitch,
-        });
-        setTimeout(() => {
-          self.map.rotateTo(e.route[0].steps[0].heading)
-          self.destinationLoaded = true
-        }, 3000)
-      }, 10000)
+    })
+    this.directions.on('load', () => {
+      console.log("### MAP STOPPED MOVING")
     })
   }
   initiateNavigation() {
@@ -147,36 +137,41 @@ class Navigate extends Component {
       }
     })
   }
-  locationUpdated(longitude, latitude, pitch, heading) {
+  locationUpdated(longitude, latitude, zoom, pitch, heading) {
+    const self = this
     const point = {
       type: 'Point',
       coordinates: [longitude, latitude],
     };
-    if (this.destinationLoaded) {
-      console.log("### LOCATION HAS UPDATED, DONE ANIMATING")
-      this.map.getSource('user-location').setData(point)
-    } else {
-      console.log("### LOCATION HAS UPDATED, BUT STILL ANIMATING")
-    }
+    this.map.getSource('user-location').setData(point)
     this.map.flyTo({
       center: [longitude, latitude],
       speed: 2,
       curve: 1,
       pitch,
-      heading,
+      zoom,
     })
+    setTimeout(() => {
+      self.map.rotateTo(heading)
+    }, 2000)
   }
   tripStarted() {
     const self = this
-    this.setState({
-      gradientOpacity: 0,
-    }, () => {
-      setTimeout(() => {
-        self.setState({
-          hideGradient: true,
-        })
-      }, 1000)
-    })
+    const {longitude, latitude, zoom, pitch, heading, destinationLoaded} = this.props
+    if (destinationLoaded) {
+      this.setState({
+        gradientOpacity: 0,
+      }, () => {
+        setTimeout(() => {
+          self.setState({
+            hideGradient: true,
+          })
+          self.locationUpdated(longitude, latitude, zoom, pitch, heading)
+        }, 1000)
+      })
+    } else {
+      console.log("### SHIT AINT EVEN LOAD YET")
+    }
   }
   getMapStyles() {
     const {width, height} = this.props
