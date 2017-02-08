@@ -36,7 +36,7 @@ const styles = {
     zIndex: 1,
   },
   heading: {
-    letterSpacing: '0.4em',
+    letterSpacing: '0.2em',
     marginBottom: 5,
   },
   destinationName: {

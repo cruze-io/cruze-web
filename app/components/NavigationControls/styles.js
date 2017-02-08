@@ -63,7 +63,50 @@ const styles = {
     paddingTop: 28,
   },
   stepContainer: {
+    height: 160,
+  },
+  iconContainer: {
+    position: 'relative',
+    width: '30%',
     height: 90,
+    display: 'inline-block',
+    verticalAlign: 'top',
+  },
+  icon: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+  },
+  iconImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: 55,
+    marginRight: 'auto',
+    marginLeft: 'auto',
+    marginTop: 'auto',
+    marginBottom: 'auto',
+  },
+  intersectionContainer: {
+    width: '70%',
+    height: 90,
+    display: 'inline-block',
+    verticalAlign: 'top',
+  },
+  maneuverType: {
+    textTransform: 'uppercase',
+    letterSpacing: '0.1em',
+    marginTop: 22,
+    marginBottom: 5,
+  },
+  tripOverviewContaienr: {
+    display: 'block',
+    width: '100%',
+    height: 50,
   },
 }
 

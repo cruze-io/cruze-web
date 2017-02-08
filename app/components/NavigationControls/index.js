@@ -1,7 +1,9 @@
 import React, {Component, PropTypes} from 'react'
 import ImmutablePropTypes from 'react-immutable-proptypes'
+import navigationIcons from '../../constants/navigationIcons'
 import Slider from 'react-slick'
 import Text from '../Text'
+import Image from '../Image'
 import Button from '../Button'
 import styles from './styles'
 
@@ -120,15 +122,36 @@ class NavigationControls extends Component {
   renderSteps() {
     const {tripSteps} = this.props
     return tripSteps.map((step, index) => {
+      console.log(step.toJS())
+      console.log(step.get('maneuver').get('type'))
+      console.log(navigationIcons)
       return (
         <div key={index} style={styles.stepContainer}>
-          <div style={styles.directionContainer}>
+          <div style={styles.iconContainer}>
+            <div style={styles.icon}>
+              <img
+                src={navigationIcons.getIcon(step.get('maneuver').get('type'))}
+                style={styles.iconImage}
+              />
+            </div>
           </div>
+
           <div style={styles.intersectionContainer}>
             <Text
-              text={step.get('way_name')}
-              color={'white'}
+              text={step.get('maneuver').get('type')}
+              size={'small'}
+              weight={'light'}
+              styles={styles.maneuverType}
             />
+            <Text
+              text={step.get('way_name')}
+              size={step.get('way_name').length > 20 ? 16 : 20}
+              weight={'light'}
+            />
+          </div>
+
+          <div style={styles.tripOverviewContaienr}>
+
           </div>
         </div>
       )

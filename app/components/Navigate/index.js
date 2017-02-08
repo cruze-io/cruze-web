@@ -169,7 +169,6 @@ class Navigate extends Component {
     )
   }
   render() {
-    console.log(mapBox)
     const {key} = this.props
     const {gradientOpacity, hideGradient} = this.state
     return (
