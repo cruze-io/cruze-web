@@ -16,11 +16,18 @@ export const getLocation = () => {
     }
     const success = (position) => {
       console.log(position)
-      dispatch({
+      let newPosition = {
         type: LOCATION_UPDATED,
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
-      })
+      }
+      if (position.coords.heading) {
+        newPosition.heading = position.coords.heading
+      }
+      if (position.coords.speed) {
+        newPosition.speed = position.coords.speed
+      }
+      dispatch(newPosition)
     }
     const watchPositionOptions = {
       enableHighAccuracy: true,

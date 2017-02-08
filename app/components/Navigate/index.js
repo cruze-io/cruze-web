@@ -39,8 +39,11 @@ class Navigate extends Component {
     this.loadMapBox()
   }
   componentWillReceiveProps(nextProps) {
-    const {zoom, latitude, longitude, destinationLoaded} = this.props
+    const {zoom, latitude, longitude, heading, destinationLoaded} = this.props
     if (latitude && longitude && (nextProps.latitude !== latitude) || (nextProps.longitude !== longitude)) {
+      this.locationUpdated(nextProps.longitude, nextProps.latitude, nextProps.pitch, nextProps.heading)
+    }
+    if (heading && (nextProps.heading !== heading)) {
       this.locationUpdated(nextProps.longitude, nextProps.latitude, nextProps.pitch, nextProps.heading)
     }
     if (nextProps.tripStarted) {
@@ -96,7 +99,7 @@ class Navigate extends Component {
       this.map.addLayer(layer)
     })
   }
-  locationUpdated(longitude, latitude) {
+  locationUpdated(longitude, latitude, pitch, heading) {
     const self = this
     const {tripStarted} = this.props
     const point = {
@@ -104,17 +107,23 @@ class Navigate extends Component {
       coordinates: [longitude, latitude],
     };
     if (tripStarted) {
+      this.mapUpdating = true
       this.map.getSource('user-location').setData(point)
       this.map.flyTo({
         center: [longitude, latitude],
         speed: 2,
         curve: 1,
+        heading,
       })
+      setTimeout(() => {
+        self.mapUpdating = false
+      }, 2000)
     }
   }
   tripStarted() {
     const self = this
     const {longitude, latitude, zoom, pitch, heading, destinationLoaded} = this.props
+    this.mapUpdating = true
     if (destinationLoaded) {
       this.setState({
         gradientOpacity: 0,
