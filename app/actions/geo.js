@@ -22,13 +22,13 @@ export const getLocation = () => {
         longitude: position.coords.longitude,
       }
       if (speed) {
-        newPosition.speed = speed
+        newPosition.speed = position.coords.speed
       }
       console.log(latitude)
       console.log(getState().get('geo').toJS().latitude)
 
       // if (currentStepLat, currentStepLng, nextStepLat, nextStepLng) {
-      //   newPosition.distanceToNextDirection = getDistance(currentStepLat, currentStepLng, nextStepLat, nextStepLng)
+      //   newPosition.distanceToNextDirection = getDistance(currentStepLngLat, currentStepLng, nextStepLat, nextStepLng)
       // }
       console.log(newPosition)
       dispatch(newPosition)
