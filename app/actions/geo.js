@@ -16,20 +16,20 @@ export const getLocation = () => {
       console.log(msg)
     }
     const success = (position) => {
+      const {latitude, longitude, speed} = position.coords
       let newPosition = {
         type: LOCATION_UPDATED,
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
       }
-      if (position.coords.speed) {
-        newPosition.speed = position.coords.speed
+      let prevLatitude = getState().get('geo').get('latitude')
+      let preLongitude = getState().get('geo').get('longitude')
+      if (speed) {
+        newPosition.speed = speed
       }
-      console.log(position.coords.latitude)
-      console.log(getState().get('geo').toJS().latitude)
-
-      // if (currentStepLat, currentStepLng, nextStepLat, nextStepLng) {
-      //   newPosition.distanceToNextDirection = getDistance(currentStepLngLat, currentStepLng, nextStepLat, nextStepLng)
-      // }
+      if (prevLatitude && prevLongitude) {
+        newPosition.heading = getHeading(latitude, longitude, prevLatitude, prevLongitude)
+      }
       console.log(newPosition)
       dispatch(newPosition)
     }

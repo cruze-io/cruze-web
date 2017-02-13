@@ -48,6 +48,7 @@ export default createReducer(initialState, {
       gettingLocation: false,
       latitude: action.latitude,
       longitude: action.longitude,
+      heading: action.heading,
     })
   },
   [GEO_ERROR]: (state, action) => {
