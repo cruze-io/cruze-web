@@ -21,10 +21,10 @@ export const getLocation = () => {
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
       }
-      if (speed) {
+      if (position.coords.speed) {
         newPosition.speed = position.coords.speed
       }
-      console.log(latitude)
+      console.log(position.coords.latitude)
       console.log(getState().get('geo').toJS().latitude)
 
       // if (currentStepLat, currentStepLng, nextStepLat, nextStepLng) {
