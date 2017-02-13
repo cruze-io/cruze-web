@@ -53,7 +53,7 @@ export const getLocation = () => {
 
 export const getHeading = () => {
   return (dispatch) => {
-    const handleOrientation = (e) => {
+    const handleOrientation = (event) => {
       var absolute = event.absolute;
       var alpha    = event.alpha;
       var beta     = event.beta;
@@ -66,7 +66,6 @@ export const getHeading = () => {
         })
       }
     }
-    window.addEventListener("deviceorientation", handleOrientation, true);
   }
 }
 export const setTrip = (distance, duration, tripSteps) => {

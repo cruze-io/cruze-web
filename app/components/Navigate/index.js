@@ -34,6 +34,7 @@ class Navigate extends Component {
     this.drawUserMarker = this.drawUserMarker.bind(this)
     this.tripStarted = this.tripStarted.bind(this)
     this.renderDestinationInformation = this.renderDestinationInformation.bind(this)
+    this.startTrackingUserHeading = this.startTrackingUserHeading.bind(this)
   }
   componentDidMount() {
     this.loadMapBox()
@@ -120,6 +121,14 @@ class Navigate extends Component {
       }, 2000)
     }
   }
+  startTrackingUserHeading() {
+    const handleOrientation = (event) => {
+      if (event && event.alpha) {
+        this.map.rotateTo(event.alpha)
+      }
+    }
+    window.addEventListener("deviceorientation", handleOrientation, true);
+  }
   tripStarted() {
     const self = this
     const {longitude, latitude, zoom, pitch, heading, destinationLoaded} = this.props
@@ -141,6 +150,7 @@ class Navigate extends Component {
           })
           setTimeout(() => {
             self.map.rotateTo(heading)
+            self.startTrackingUserHeading()
           }, 2000)
         }, 1000)
       })
