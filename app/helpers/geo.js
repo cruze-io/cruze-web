@@ -5,6 +5,8 @@ export const deg2rad = (deg) => {
 export const getHeading = (lat1, lng1, lat2, lng2) => {
   const p1 = {x: lng1, y: lat1}
   const p2 = {x: lng2, y: lat2}
+  console.log(p1, p2)
+  console.log(Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI)
   return Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI
 }
 
