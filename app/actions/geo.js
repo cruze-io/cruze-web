@@ -1,5 +1,5 @@
 import {navigate} from '../services/navigation'
-import {getDistance, getHeading} from '../helpers/geo'
+import {getDistance} from '../helpers/geo'
 export const GETTING_LOCATION = 'GETTING_LOCATION'
 export const LOCATION_UPDATED = 'LOCATION_UPDATED'
 export const GEO_ERROR = 'GEO_ERROR'
@@ -33,17 +33,6 @@ export const getLocation = () => {
       if (speed) {
         newPosition.speed = speed
       }
-      if (prevLongitude && prevLatitude) {
-        console.log("### CALCULATING HEADING")
-        console.log(getState().get('geo').toJS())
-        console.log(prevLatitude)
-        console.log(prevLongitude)
-        console.log(latitude)
-        console.log(longitude)
-        console.log(getHeading(prevLatitude, prevLongitude, latitude, longitude))
-        console.log(getHeading(prevLongitude,prevLatitude, longitude, latitude))
-        newPosition.heading = getHeading(prevLatitude, prevLongitude, latitude, longitude)
-      }
       if (currentStepLat, currentStepLng, nextStepLat, nextStepLng) {
         newPosition.distanceToNextDirection = getDistance(currentStepLat, currentStepLng, nextStepLat, nextStepLng)
       }
@@ -65,6 +54,18 @@ export const getLocation = () => {
   }
 }
 
+export const getHeading = () => {
+  return (dispatch) => {
+    const handleOrientation = (e) => {
+      var absolute = event.absolute;
+      var alpha    = event.alpha;
+      var beta     = event.beta;
+      var gamma    = event.gamma;
+      console.log(absolute, alpha, beta, gamma)
+    }
+    window.addEventListener("deviceorientation", handleOrientation, true);
+  }
+}
 export const setTrip = (distance, duration, tripSteps) => {
   const heading = tripSteps[0].heading
   return (dispatch, getState) => {
