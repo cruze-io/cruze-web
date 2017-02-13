@@ -28,7 +28,7 @@ export const getLocation = () => {
         newPosition.speed = speed
       }
       if (prevLatitude && prevLongitude) {
-        newPosition.heading = getHeading(latitude, longitude, prevLatitude, prevLongitude)
+        newPosition.heading = getHeading(prevLatitude, prevLongitude, latitude, longitude)
       }
       console.log(newPosition)
       dispatch(newPosition)
