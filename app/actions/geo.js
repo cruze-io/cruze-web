@@ -16,33 +16,17 @@ export const getLocation = () => {
       console.log(msg)
     }
     const success = (position) => {
-      const {latitude, longitude, heading, speed} = position.coords
-      const prevLongitude = getState().get('geo').get('longitude')
-      const prevLatitude = getState().get('geo').get('latitude')
-      const tripSteps = getState().get('geo').get('tripSteps')
-      const currentNavigationStep = getState().get('geo').get('currentNavigationStep')
-      const currentStepLat = tripSteps && tripSteps.size ? tripSteps.get(currentNavigationStep).get('maneuver').get('location').get('coordinates').get(0) : null
-      const currentStepLng = tripSteps && tripSteps.size ? tripSteps.get(currentNavigationStep).get('maneuver').get('location').get('coordinates').get(1) : null
-      const nextStepLat = tripSteps && tripSteps.size ? tripSteps.get(currentNavigationStep + 1) ? tripSteps.get(currentNavigationStep + 1).get('maneuver').get('location').get('coordinates').get(0) : null : null
-      const nextStepLng = tripSteps && tripSteps.size ? tripSteps.get(currentNavigationStep + 1) ? tripSteps.get(currentNavigationStep + 1).get('maneuver').get('location').get('coordinates').get(1) : null : null
       let newPosition = {
         type: LOCATION_UPDATED,
-        latitude: latitude,
-        longitude: longitude,
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
       }
       if (speed) {
         newPosition.speed = speed
       }
-      if (prevLongitude && prevLatitude) {
-        console.log("### CALCULATING HEADING")
-        console.log(getState().get('geo').toJS())
-        console.log(prevLatitude)
-        console.log(prevLongitude)
-        console.log(latitude)
-        console.log(longitude)
-        console.log(getHeading(prevLatitude, prevLongitude, latitude, longitude))
-        newPosition.heading = getHeading(prevLatitude, prevLongitude, latitude, longitude)
-      }
+      console.log(latitude)
+      console.log(getState().get('geo').toJS().latitude)
+
       // if (currentStepLat, currentStepLng, nextStepLat, nextStepLng) {
       //   newPosition.distanceToNextDirection = getDistance(currentStepLat, currentStepLng, nextStepLat, nextStepLng)
       // }
