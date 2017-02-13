@@ -122,6 +122,7 @@ class Navigate extends Component {
     }
   }
   startTrackingUserHeading() {
+    const {latitude, longitude, pitch} = this.props
     const handleOrientation = (event) => {
       if (event && event.alpha && event.beta && event.gamma) {
         // Convert degrees to radians
@@ -154,8 +155,8 @@ class Navigate extends Component {
 
         // Convert radians to degrees
         compassHeading *= 180 / Math.PI - 20;
+        this.locationUpdated(latitude, longitude, pitch, compassHeading)
 
-        this.map.rotateTo(compassHeading)
       }
     }
     window.addEventListener("deviceorientation", handleOrientation, true);
