@@ -21,7 +21,6 @@ export const getLocation = () => {
       const prevLatitude = getState().get('geo').get('latitude')
       const tripSteps = getState().get('geo').get('tripSteps')
       const currentNavigationStep = getState().get('geo').get('currentNavigationStep')
-      console.log(tripSteps)
       const currentStepLat = tripSteps && tripSteps.size ? tripSteps.get(currentNavigationStep).get('maneuver').get('location').get('coordinates').get(0) : null
       const currentStepLng = tripSteps && tripSteps.size ? tripSteps.get(currentNavigationStep).get('maneuver').get('location').get('coordinates').get(1) : null
       const nextStepLat = tripSteps && tripSteps.size ? tripSteps.get(currentNavigationStep + 1) ? tripSteps.get(currentNavigationStep + 1).get('maneuver').get('location').get('coordinates').get(0) : null : null
@@ -40,6 +39,7 @@ export const getLocation = () => {
       if (currentStepLat, currentStepLng, nextStepLat, nextStepLng) {
         newPosition.distanceToNextDirection = getDistance(currentStepLat, currentStepLng, nextStepLat, nextStepLng)
       }
+      console.log(newPosition)
       dispatch(newPosition)
     }
     const watchPositionOptions = {
