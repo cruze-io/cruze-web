@@ -24,6 +24,7 @@ class NavigationControls extends Component {
       contentTop: 0,
       summaryOpacity: 1,
       statusOpacity: 0,
+      initiatedTrip: false,
     }
     this.renderTripSummary = this.renderTripSummary.bind(this)
     this.renderTripStatus = this.renderTripStatus.bind(this)
@@ -32,15 +33,19 @@ class NavigationControls extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.tripStarted) {
-      this.tripStarted()
+      if (!this.state.initiatedTrip) {
+        this.tripStarted()
+      }
     }
   }
   tripStarted() {
+    const {tripSteps} = this.props
     this.setState({
       contentTop: '-100%',
       summaryOpacity: 0,
       statusOpacity: 1,
       slidesToShow: 1,
+      initiatedTrip: true,
     })
   }
   renderTripSummary() {
@@ -123,8 +128,7 @@ class NavigationControls extends Component {
     const {tripSteps} = this.props
     return tripSteps.map((step, index) => {
       console.log(step.toJS())
-      console.log(step.get('maneuver').get('type'))
-      console.log(navigationIcons)
+      const wayName = !step.get('way_name') && step.get('maneuver').get('type') === 'depart' ? step.get('maneuver').get('instruction') : step.get('way_name')
       return (
         <div key={index} style={styles.stepContainer}>
           <div style={styles.iconContainer}>
@@ -139,13 +143,13 @@ class NavigationControls extends Component {
           <div style={styles.intersectionContainer}>
             <Text
               text={step.get('maneuver').get('type')}
-              size={'small'}
+              size={10}
               weight={'light'}
               styles={styles.maneuverType}
             />
             <Text
-              text={step.get('way_name')}
-              size={step.get('way_name').length > 20 ? 16 : 20}
+              text={wayName}
+              size={step.get('way_name').length > 20 ? 16 : 18}
               weight={'light'}
             />
           </div>

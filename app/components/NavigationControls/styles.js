@@ -63,12 +63,13 @@ const styles = {
     paddingTop: 28,
   },
   stepContainer: {
-    height: 160,
+    height: 75,
+    borderBottom: '1px solid rgba(250,250,250,0.1)',
   },
   iconContainer: {
     position: 'relative',
     width: '30%',
-    height: 90,
+    height: 75,
     display: 'inline-block',
     verticalAlign: 'top',
   },
@@ -85,7 +86,7 @@ const styles = {
     left: 0,
     right: 0,
     bottom: 0,
-    width: 55,
+    width: 40,
     marginRight: 'auto',
     marginLeft: 'auto',
     marginTop: 'auto',
@@ -93,14 +94,14 @@ const styles = {
   },
   intersectionContainer: {
     width: '70%',
-    height: 90,
+    height: 70,
     display: 'inline-block',
     verticalAlign: 'top',
   },
   maneuverType: {
     textTransform: 'uppercase',
     letterSpacing: '0.1em',
-    marginTop: 22,
+    marginTop: 20,
     marginBottom: 5,
   },
   tripOverviewContaienr: {

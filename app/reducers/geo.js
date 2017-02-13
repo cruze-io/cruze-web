@@ -34,6 +34,7 @@ const initialState = fromJS({
   navigationSteps: List(),
   tripStarted: false,
   tripSteps: List([]),
+  distanceToNextDirection: null,
 })
 
 export default createReducer(initialState, {
