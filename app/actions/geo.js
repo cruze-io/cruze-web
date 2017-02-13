@@ -35,6 +35,10 @@ export const getLocation = () => {
       }
       if (prevLongitude && prevLatitude) {
         newPosition.heading = getHeading(prevLatitude, prevLongitude, latitude, longitude)
+        console.log("### CALCULATING HEADING")
+        console.log(getState().get('geo').toJS())
+        console.log(getHeading(prevLatitude, prevLongitude, latitude, longitude))
+        console.log(getHeading(prevLongitude,prevLatitude, longitude, latitude))
       }
       if (currentStepLat, currentStepLng, nextStepLat, nextStepLng) {
         newPosition.distanceToNextDirection = getDistance(currentStepLat, currentStepLng, nextStepLat, nextStepLng)

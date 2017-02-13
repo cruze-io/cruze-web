@@ -44,7 +44,6 @@ export default createReducer(initialState, {
     })
   },
   [LOCATION_UPDATED]: (state, action) => {
-    console.log("HERERE")
     return state.merge({
       gettingLocation: false,
       latitude: action.latitude,
