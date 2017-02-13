@@ -159,7 +159,7 @@ class Navigate extends Component {
 
       }
     }
-    window.addEventListener("deviceorientation", handleOrientation, true);
+    // window.addEventListener("deviceorientation", handleOrientation, true);
   }
   tripStarted() {
     const self = this

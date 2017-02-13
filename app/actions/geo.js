@@ -1,5 +1,5 @@
 import {navigate} from '../services/navigation'
-import {getDistance} from '../helpers/geo'
+import {getDistance, getHeading} from '../helpers/geo'
 export const GETTING_LOCATION = 'GETTING_LOCATION'
 export const LOCATION_UPDATED = 'LOCATION_UPDATED'
 export const GEO_ERROR = 'GEO_ERROR'
@@ -16,19 +16,42 @@ export const getLocation = () => {
       console.log(msg)
     }
     const success = (position) => {
+      const {latitude, longitude, heading, speed} = position.coords
+      const prevLongitude = getState().get('geo').get('longitude')
+      const prevLatitude = getState().get('geo').get('latitude')
+      const tripSteps = getState().get('geo').get('tripSteps')
+      const currentNavigationStep = getState().get('geo').get('currentNavigationStep')
+      const currentStepLat = tripSteps && tripSteps.size ? tripSteps.get(currentNavigationStep).get('maneuver').get('location').get('coordinates').get(0) : null
+      const currentStepLng = tripSteps && tripSteps.size ? tripSteps.get(currentNavigationStep).get('maneuver').get('location').get('coordinates').get(1) : null
+      const nextStepLat = tripSteps && tripSteps.size ? tripSteps.get(currentNavigationStep + 1) ? tripSteps.get(currentNavigationStep + 1).get('maneuver').get('location').get('coordinates').get(0) : null : null
+      const nextStepLng = tripSteps && tripSteps.size ? tripSteps.get(currentNavigationStep + 1) ? tripSteps.get(currentNavigationStep + 1).get('maneuver').get('location').get('coordinates').get(1) : null : null
       let newPosition = {
         type: LOCATION_UPDATED,
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
+        latitude: latitude,
+        longitude: longitude,
       }
-      if (position.coords.speed) {
-        newPosition.speed = position.coords.speed
+      if (speed) {
+        newPosition.speed = speed
       }
+      if (prevLongitude && prevLatitude) {
+        console.log("### CALCULATING HEADING")
+        console.log(getState().get('geo').toJS())
+        console.log(prevLatitude)
+        console.log(prevLongitude)
+        console.log(latitude)
+        console.log(longitude)
+        console.log(getHeading(prevLatitude, prevLongitude, latitude, longitude))
+        newPosition.heading = getHeading(prevLatitude, prevLongitude, latitude, longitude)
+      }
+      // if (currentStepLat, currentStepLng, nextStepLat, nextStepLng) {
+      //   newPosition.distanceToNextDirection = getDistance(currentStepLat, currentStepLng, nextStepLat, nextStepLng)
+      // }
+      console.log(newPosition)
       dispatch(newPosition)
     }
     const watchPositionOptions = {
-      enableHighAccuracy: true,
-      timeout: 3000,
+      enableHighAccuracy: false,
+      timeout: 20000,
     }
     if (navigator.geolocation) {
       navigator.geolocation.watchPosition(success, err, watchPositionOptions)
@@ -41,23 +64,6 @@ export const getLocation = () => {
   }
 }
 
-export const getHeading = () => {
-  return (dispatch) => {
-    const handleOrientation = (event) => {
-      var absolute = event.absolute;
-      var alpha    = event.alpha;
-      var beta     = event.beta;
-      var gamma    = event.gamma;
-      console.log(absolute, alpha, beta, gamma)
-      if (alpha) {
-        dispatch({
-          type: LOCATION_UPDATED,
-          heading: e.alpha,
-        })
-      }
-    }
-  }
-}
 export const setTrip = (distance, duration, tripSteps) => {
   const heading = tripSteps[0].heading
   return (dispatch, getState) => {

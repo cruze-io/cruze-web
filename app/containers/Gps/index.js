@@ -24,7 +24,6 @@ class Geo extends Component {
   }
   componentDidMount() {
     this.props.dispatch(GeoActions.getLocation())
-    this.props.dispatch(GeoActions.getHeading())
   }
   mapLoaded() {
     const {dispatch, geo} = this.props
