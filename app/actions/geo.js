@@ -16,9 +16,6 @@ export const getLocation = () => {
       console.log(msg)
     }
     const success = (position) => {
-      const {latitude, longitude, heading, speed} = position.coords
-      const prevLongitude = getState().get('geo').get('longitude')
-      const prevLatitude = getState().get('geo').get('latitude')
       const tripSteps = getState().get('geo').get('tripSteps')
       const currentNavigationStep = getState().get('geo').get('currentNavigationStep')
       const currentStepLat = tripSteps && tripSteps.size ? tripSteps.get(currentNavigationStep).get('maneuver').get('location').get('coordinates').get(0) : null
@@ -27,11 +24,11 @@ export const getLocation = () => {
       const nextStepLng = tripSteps && tripSteps.size ? tripSteps.get(currentNavigationStep + 1) ? tripSteps.get(currentNavigationStep + 1).get('maneuver').get('location').get('coordinates').get(1) : null : null
       let newPosition = {
         type: LOCATION_UPDATED,
-        latitude: latitude,
-        longitude: longitude,
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
       }
-      if (speed) {
-        newPosition.speed = speed
+      if (position.coords.speed) {
+        newPosition.speed = position.coords.speed
       }
       if (currentStepLat, currentStepLng, nextStepLat, nextStepLng) {
         newPosition.distanceToNextDirection = getDistance(currentStepLat, currentStepLng, nextStepLat, nextStepLng)
@@ -62,6 +59,12 @@ export const getHeading = () => {
       var beta     = event.beta;
       var gamma    = event.gamma;
       console.log(absolute, alpha, beta, gamma)
+      if (alpha) {
+        dispatch({
+          type: LOCATION_UPDATED,
+          heading: e.alpha,
+        })
+      }
     }
     window.addEventListener("deviceorientation", handleOrientation, true);
   }
