@@ -16,12 +16,6 @@ export const getLocation = () => {
       console.log(msg)
     }
     const success = (position) => {
-      const tripSteps = getState().get('geo').get('tripSteps')
-      const currentNavigationStep = getState().get('geo').get('currentNavigationStep')
-      const currentStepLat = tripSteps && tripSteps.size ? tripSteps.get(currentNavigationStep).get('maneuver').get('location').get('coordinates').get(0) : null
-      const currentStepLng = tripSteps && tripSteps.size ? tripSteps.get(currentNavigationStep).get('maneuver').get('location').get('coordinates').get(1) : null
-      const nextStepLat = tripSteps && tripSteps.size ? tripSteps.get(currentNavigationStep + 1) ? tripSteps.get(currentNavigationStep + 1).get('maneuver').get('location').get('coordinates').get(0) : null : null
-      const nextStepLng = tripSteps && tripSteps.size ? tripSteps.get(currentNavigationStep + 1) ? tripSteps.get(currentNavigationStep + 1).get('maneuver').get('location').get('coordinates').get(1) : null : null
       let newPosition = {
         type: LOCATION_UPDATED,
         latitude: position.coords.latitude,
@@ -30,14 +24,10 @@ export const getLocation = () => {
       if (position.coords.speed) {
         newPosition.speed = position.coords.speed
       }
-      if (currentStepLat, currentStepLng, nextStepLat, nextStepLng) {
-        newPosition.distanceToNextDirection = getDistance(latitude, longitude, currentStepLat, currentStepLng)
-      }
-      console.log(newPosition)
       dispatch(newPosition)
     }
     const watchPositionOptions = {
-      enableHighAccuracy: false,
+      enableHighAccuracy: true,
       timeout: 3000,
     }
     if (navigator.geolocation) {
