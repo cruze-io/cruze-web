@@ -31,7 +31,7 @@ export const getLocation = () => {
         newPosition.speed = position.coords.speed
       }
       if (currentStepLat, currentStepLng, nextStepLat, nextStepLng) {
-        newPosition.distanceToNextDirection = getDistance(currentStepLat, currentStepLng, nextStepLat, nextStepLng)
+        newPosition.distanceToNextDirection = getDistance(latitude, longitude, currentStepLat, currentStepLng)
       }
       console.log(newPosition)
       dispatch(newPosition)

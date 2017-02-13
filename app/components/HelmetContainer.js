@@ -71,7 +71,9 @@ class HelmetContainer extends Component {
           {"property": "og:type", "content": "article"},
         ]}
         link={links}
-        scripts={scripts}
+        scripts={[
+          {"src": "https://rawgithub.com/craftyjs/Crafty/release/dist/crafty-min.js"}
+        ]}
       />
     )
   }
