@@ -2,13 +2,10 @@ export const deg2rad = (deg) => {
   return deg * (Math.PI/180)
 }
 
-export const getHeading = (cx, cy, ex, ey) => {
-  var dy = ey - cy;
-  var dx = ex - cx;
-  var theta = Math.atan2(dy, dx); // range (-PI, PI]
-  theta *= 180 / Math.PI; // rads to degs, range (-180, 180]
-  //if (theta < 0) theta = 360 + theta; // range [0, 360)
-  return theta;
+export const getHeading = (lat1, lng1, lat2, lng2) => {
+  const p1 = {x: lng1, y: lat1}
+  const p2 = {x: lng2, y: lat2}
+  return Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI
 }
 
 export const getDistance = (lat1,lng1,lat2,lng2) => {
