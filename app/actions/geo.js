@@ -34,8 +34,8 @@ export const getLocation = () => {
       dispatch(newPosition)
     }
     const watchPositionOptions = {
-      enableHighAccuracy: false,
-      timeout: 20000,
+      enableHighAccuracy: true,
+      timeout: 3000,
     }
     if (navigator.geolocation) {
       navigator.geolocation.watchPosition(success, err, watchPositionOptions)
