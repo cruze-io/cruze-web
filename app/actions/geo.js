@@ -23,7 +23,7 @@ export const getLocation = () => {
         longitude: position.coords.longitude,
       }
       let prevLatitude = getState().get('geo').get('latitude')
-      let preLongitude = getState().get('geo').get('longitude')
+      let prevLongitude = getState().get('geo').get('longitude')
       if (speed) {
         newPosition.speed = speed
       }
