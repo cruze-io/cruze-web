@@ -153,7 +153,7 @@ class Navigate extends Component {
         }
 
         // Convert radians to degrees
-        compassHeading *= 180 / Math.PI;
+        // compassHeading *= 180 / Math.PI;
 
         this.map.rotateTo(compassHeading)
       }
