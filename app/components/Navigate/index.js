@@ -154,8 +154,8 @@ class Navigate extends Component {
         }
 
         // Convert radians to degrees
-        compassHeading *= 180 / Math.PI - 20;
-        this.locationUpdated(latitude, longitude, pitch, compassHeading)
+        compassHeading *= 180 / Math.PI;
+        this.locationUpdated(longitude, latitude, pitch, compassHeading)
 
       }
     }
