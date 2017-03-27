@@ -30,15 +30,20 @@ export const getLocation = () => {
       if (prevLatitude && prevLongitude) {
         newPosition.heading = getHeading(latitude, longitude, prevLatitude, prevLongitude)
       }
-      console.log(newPosition)
       dispatch(newPosition)
     }
     const watchPositionOptions = {
       enableHighAccuracy: true,
       timeout: 3000,
     }
-    if (navigator.geolocation) {
+    if (navigator.geolocation && !(window.location.search.indexOf('example') > -1)) {
       navigator.geolocation.watchPosition(success, err, watchPositionOptions)
+    } else if (window.location.search.indexOf('example') > -1) {
+      dispatch({
+        latitude: '37.4664161',
+        longitude: '-122.2098085',
+        type: 'LOCATION_UPDATED',
+      })
     } else {
       dispatch({
         type: GEO_ERROR,

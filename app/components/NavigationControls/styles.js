@@ -19,6 +19,7 @@ const styles = {
     width: '100%',
     height: '49%',
     transition: '0.3s ease',
+    transform: window.location.search.indexOf('example') > -1 ? 'scale(0.8)' : 'scale(1)'
   },
   statusContainer: {
     position: 'relative',

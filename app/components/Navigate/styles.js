@@ -34,6 +34,7 @@ const styles = {
     height: 100,
     textAlign: 'center',
     zIndex: 1,
+    transform: window.location.search.indexOf('example') > -1 ? 'scale(0.8)' : 'scale(1)'
   },
   heading: {
     letterSpacing: '0.2em',

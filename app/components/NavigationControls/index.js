@@ -127,7 +127,6 @@ class NavigationControls extends Component {
   renderSteps() {
     const {tripSteps} = this.props
     return tripSteps.map((step, index) => {
-      console.log(step.toJS())
       const wayName = !step.get('way_name') && step.get('maneuver').get('type') === 'depart' ? step.get('maneuver').get('instruction') : step.get('way_name')
       return (
         <div key={index} style={styles.stepContainer}>
@@ -143,7 +142,7 @@ class NavigationControls extends Component {
           <div style={styles.intersectionContainer}>
             <Text
               text={step.get('maneuver').get('type')}
-              size={10}
+              size={7}
               weight={'light'}
               styles={styles.maneuverType}
             />
